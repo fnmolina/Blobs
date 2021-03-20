@@ -1,0 +1,86 @@
+
+class Blob
+{
+	double position;
+	blobMovement;
+	etary group;
+	foodCount;
+	blobDeathProb;
+	maxSpeed; //especialmente para modo 2
+}
+
+class Point
+{
+	float x, y, z
+	Point ();
+
+}
+
+class Food
+{
+	position;
+}
+
+class World
+{
+	* blobs[MAXBLOBS];
+	blobCount;
+	* food;
+}
+
+struct userData
+{
+	mode;
+	initialBlobs;
+	maxSpeed;
+	speedProb;
+	smellRadius;
+	randomJiggleLimit;
+	deathProb;
+	foodCount;
+}
+
+Funciones:
+
+
+
+ACCIONES:
+
+class Blob:
+	createBlobs;
+	adjustMovement; --> usa smell radius
+	moveBlobs; --> usa movement 
+	destroyBlob;
+	feedBlob;
+	grow;
+
+class Food:	
+	createFood;
+	destroyFood;
+
+
+class World
+	checkCollision
+	collision; --> aca esta merge: se fija los blobs que colisionan, cambia arreglo de blobs, calculo de sentido
+
+
+SIMULACION:
+	main --> estructura de allegro, inits-deinits
+	update --> parte logica simulacion
+	draw --> grafica
+
+
+DIVISION
+	
+	Luciano:
+		draw
+		ImGUI
+
+	Mili:
+		Point
+		Blob
+		Food
+
+	Facu:
+		userData
+		World
