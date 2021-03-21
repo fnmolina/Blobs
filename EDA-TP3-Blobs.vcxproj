@@ -141,6 +141,16 @@
   <ItemGroup>
     <Text Include="modularizacion.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Clase18-03\Clase18-03\Point.cpp" />
+    <ClCompile Include="Blob.cpp" />
+    <ClCompile Include="Food.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Clase18-03\Clase18-03\Point.h" />
+    <ClInclude Include="Blob.h" />
+    <ClInclude Include="Food.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
