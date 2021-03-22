@@ -16,7 +16,6 @@ class Blob {
 	double blobDeathProb;
 	double maxSpeed; //especialmente para modo 2
 
-
 	Blob();
 
 	void adjustMovement(Blob* b, Point food, double SmellRadius);

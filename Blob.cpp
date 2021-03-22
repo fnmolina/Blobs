@@ -5,7 +5,7 @@
 #define SCREEN_W 1
 #define SCREEN_H 2
 
-#define UNIDAD 1
+#define MOVEMENT 1//No se si lo tendria q relacionar con la velocidad del muñequito
 
 Blob::Blob() {
 	position = (rand()%SCREEN_W, rand()%SCREEN_H);
@@ -40,7 +40,7 @@ void Blob::adjustMovement (Blob* b, Point food, double SmellRadius) {
 //Cambia la posicion del blob.
 void Blob::move(Blob* b, Point food, double SmellRadius) {
 	adjustMovement(b, food, SmellRadius);
-	b->position.translate(b->position, UNIDAD, b->blobMovement);
+	b->position.translate(b->position, MOVEMENT , b->blobMovement);
 }
 
 void Blob::feed(void) {
