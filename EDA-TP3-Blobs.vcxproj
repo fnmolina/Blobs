@@ -142,14 +142,18 @@
     <Text Include="modularizacion.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Clase18-03\Clase18-03\Point.cpp" />
     <ClCompile Include="Blob.cpp" />
     <ClCompile Include="Food.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Clase18-03\Clase18-03\Point.h" />
     <ClInclude Include="Blob.h" />
     <ClInclude Include="Food.h" />
+    <ClInclude Include="logic.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
