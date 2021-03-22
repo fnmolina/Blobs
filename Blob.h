@@ -19,11 +19,11 @@ class Blob {
 
 	Blob();
 
-	void adjustMovement();
-	//void move();
+	void adjustMovement(Blob* b, Point food, double SmellRadius);
+	void move((Blob* b, Point food, double SmellRadius);
 	void feed(void);
 	void grow(void);
-	//void destroy();
+	void destroy(Blob* b);
 
 	//adjustMovement; -- > usa smell radius
 	//moveBlobs; -- > usa movement

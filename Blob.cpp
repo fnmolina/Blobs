@@ -28,9 +28,8 @@ Blob::Blob() {
 	blobDeathProb = rand()%1; //Valor random entre 0 y 1?????????
 	maxSpeed = 0;
 }
-
 //Si la distancia entre el blob y la comida es menor o igual que SmellRadius entonces se dirige hacia la comida.
-void adjustMovement (Blob* b, Point food, double SmellRadius) {
+void Blob::adjustMovement (Blob* b, Point food, double SmellRadius) {
 	if (getDistance(b->position, food) <= SmellRadius)
 	{
 		b->blobMovement = getAngle(b->position, food);
@@ -39,7 +38,7 @@ void adjustMovement (Blob* b, Point food, double SmellRadius) {
 }
 
 //Cambia la posicion del blob.
-void move(Blob* b, Point food, double SmellRadius) {
+void Blob::move(Blob* b, Point food, double SmellRadius) {
 	adjustMovement(b, food, SmellRadius);
 	b->position.translate(b->position, UNIDAD, b->blobMovement);
 }
@@ -64,7 +63,8 @@ void Blob::feed(void) {
 		break;
 	}
 }
-void Blob::grow() {
+
+void Blob::grow(void) {
 	switch (etaryGroup) {
 	case BABY_BLOB:
 		etaryGroup = GROWN_BLOB;
@@ -77,6 +77,7 @@ void Blob::grow() {
 		break;
 	}
 }
-void destroy(Blob* b) {
+
+void Blob::destroy(Blob* b) {
 	b = NULL;
 }
