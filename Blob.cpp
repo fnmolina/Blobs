@@ -5,6 +5,8 @@
 #define SCREEN_W 1
 #define SCREEN_H 2
 
+#define UNIDAD 1
+
 Blob::Blob() {
 	position = (rand()%SCREEN_W, rand()%SCREEN_H);
 	blobMovement = rand()%360; //direccion de movimiento
@@ -27,8 +29,21 @@ Blob::Blob() {
 	maxSpeed = 0;
 }
 
-//void adjustMovement();
-//void move();
+//Si la distancia entre el blob y la comida es menor o igual que SmellRadius entonces se dirige hacia la comida.
+void adjustMovement (Blob* b, Point food, double SmellRadius) {
+	if (getDistance(b->position, food) <= SmellRadius)
+	{
+		b->blobMovement = getAngle(b->position, food);
+	}
+	return;
+}
+
+//Cambia la posicion del blob.
+void move(Blob* b, Point food, double SmellRadius) {
+	adjustMovement(b, food, SmellRadius);
+	b->position.translate(b->position, UNIDAD, b->blobMovement);
+}
+
 void Blob::feed(void) {
 	++foodCount;
 	switch (etaryGroup) {
@@ -62,4 +77,6 @@ void Blob::grow() {
 		break;
 	}
 }
-//void destroy(void);
+void destroy(Blob* b) {
+	b = NULL;
+}

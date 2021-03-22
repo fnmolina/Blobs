@@ -19,7 +19,7 @@ class Blob {
 
 	Blob();
 
-	//void adjustMovement();
+	void adjustMovement();
 	//void move();
 	void feed(void);
 	void grow(void);
