@@ -11,14 +11,13 @@ class Blob
 
 class Point
 {
-	float x, y
+	float x, y, z
 	Point ();
 
 }
 
 class Food
 {
-	state;
 	position;
 }
 
@@ -33,7 +32,7 @@ struct userData
 {
 	mode;
 	initialBlobs;
-	speedMax;
+	maxSpeed;
 	speedProb;
 	smellRadius;
 	randomJiggleLimit;
@@ -63,9 +62,6 @@ class Food:
 class World
 	checkCollision
 	collision; --> aca esta merge: se fija los blobs que colisionan, cambia arreglo de blobs, calculo de sentido
-
-	OBS: el chequeo de colisiones podria hacerse por callback tanto para blob como para food.
-	-Preguntar por ubicacion de ticks y de probabilidades de muerte en el merge...
 
 
 SIMULACION:
