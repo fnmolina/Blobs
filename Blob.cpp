@@ -46,8 +46,7 @@ Blob::Blob(int mode, int speedMax, float speedProb, float deathProbBabyBlob) {
 
 //Si la distancia entre el blob y la comida es menor o igual que SmellRadius entonces se dirige hacia la comida.
 void Blob::adjustMovement (Point& food, double SmellRadius) {
-	if (position.getDistance(food) <= SmellRadius)
-	{
+	if (position.getDistance(food) <= SmellRadius){
 		direction = position.getAngle(food);
 	}
 	return;
@@ -68,13 +67,17 @@ void Blob::adjustSpeed(int mode, int speedMax, float speedProb) {
 void Blob::move (Point& food, double SmellRadius) {
 	adjustMovement(food, SmellRadius);
 	position.translate(MOVEMENT, direction);
-	if (position.x == SCREEN_W)
-	{
+	if (position.x > SCREEN_W){
 		position.x = 0;
 	}
-	if (position.y == SCREEN_H)
-	{
+	else if (position.x < 0) {
+		position.x = SCREEN_W;
+	}
+	if (position.y > SCREEN_H){
 		position.y == 0;
+	}
+	else if (position.y < 0){
+		position.y = SCREEN_H;
 	}
 }	
 
