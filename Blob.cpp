@@ -62,8 +62,16 @@ void Blob::adjustMovement (Point& food, double SmellRadius) {
 //Cambia la posicion del blob.
 void Blob::move (Point& food, double SmellRadius) {
 	adjustMovement(food, SmellRadius);
-	position.translate(MOVEMENT , direction);
-}
+	position.translate(MOVEMENT, direction);
+	if (position.x == SCREEN_W)
+	{
+		position.x = 0;
+	}
+	if (position.y == SCREEN_H)
+	{
+		position.y == 0;
+	}
+}	
 
 bool Blob::feed(void) {
 	++foodCount;
