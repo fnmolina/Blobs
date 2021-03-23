@@ -55,6 +55,8 @@ class Blob:
 	feedBlob;
 	grow;
 
+	Agregar: merge, birth, adjustSpeed
+
 class Food:	
 	createFood;
 	destroyFood;

@@ -1,23 +1,17 @@
 #ifndef __LOGIC
 #define __LOGIC
 
-#define BABYBLOB_CELL	
-#define GROWNBLOB_CELL
-#define OLDBLOB_CELL
+#define BABYBLOB_CELL	40
+#define GROWNBLOB_CELL	40	
+#define OLDBLOB_CELL	40
 
-#define FOOD_CELL
-
-#define WORLD_SIZE
-
-#define INITIAL_BLOB_SPACE	3000
-
-enum BLOBS {DEATH, BABYBLOB, GROWNBLOB, OLDBLOB};
+#define FOOD_CELL	10
 
 struct userData {
 	int mode;
 	int initialBlobs;
 	int foodCount;
-	float speedMax;
+	int speedMax;
 	float speedProb;
 	float smellRadius;
 	float randomJiggleLimit;

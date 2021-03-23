@@ -12,53 +12,50 @@
 
 using namespace std;
 
-Point::Point(float x, float y, float z)
+Point::Point(float x, float y)
 {
 	this->x = x;
 	this->y = y;
-	this->z = z;
 }
 
 void Point::move(Point& offset) {
 	x += offset.x;
 	y += offset.y;
-	z += offset.z;
 }
 
-void Point::move(float x, float y, float z) {
+void Point::move(float x, float y) {
 	//this->x += x; this es un puntero que solo es valido dentro de un metodo, vale la direccion del objeto con el que llama al metodo
 	this->x += x;
 	this->y += y;
-	this->z += z;
 }
 
 void Point::print() {
-	cout << "(" << x << ", " << y << ", " << z << ")";
+	cout << "(" << x << ", " << y  << ")";
 }
 
-double Point::getDistance(Point p1, Point p2) {
-    return sqrt(pow(p2.x - p1.x, 2) + pow((p2.y - p1.y), 2));
+double Point::getDistance(Point p2) {
+    return sqrt(pow(p2.x - x, 2) + pow((p2.y - y), 2));
 }
 
-double Point::getAngle(Point p1, Point p2) {
-    if (p1.x == p2.x && p1.y == p2.y) {
+double Point::getAngle(Point p2) {
+    if (x == p2.x && y == p2.y) {
         printf("Can't compare angle of the same points.\n");
         return FALSE;
     }
-    float angle = atan(((p2.x - p1.x) / (p2.y - p1.y))) * RIGHTANGLE * 2 / PI;  // Tomo el angulo ocmo si fuera un triangulo rectangulo
+    float angle = atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI;  // Tomo el angulo como si fuera un triangulo rectangulo
     if (angle < 0)
         angle = -angle;
-    if (p2.x > p1.x && p2.y < p1.y)    // Verifico todas las posibilidades de distribuciones para obtener el angulo respecto el norte
+    if (p2.x > x && p2.y < y)    // Verifico todas las posibilidades de distribuciones para obtener el angulo respecto el norte
         angle = RIGHTANGLE * 2 - angle;
-    else if (p2.x<p1.x && p2.y>p1.y)
+    else if (p2.x < x && p2.y > y)
         angle = RIGHTANGLE * 4 - angle;
-    else if (p2.x < p1.x && p2.y < p1.y)
+    else if (p2.x < x && p2.y < y)
         angle += RIGHTANGLE * 2;
     return angle;
 }
 
 
-Point Point::translate(Point p, double distance, double angle) {
+void Point::translate(double distance, double angle) {
     Point sign = { 1,1 };
     double complement = 2 * angle / RIGHTANGLE;
 
@@ -74,17 +71,17 @@ Point Point::translate(Point p, double distance, double angle) {
         angle -= RIGHTANGLE;  // Para obtener el angulo respecto del triangulo rectangulo
 
     angle = complement * RIGHTANGLE - angle;   //Calculo el complemento
-    p.x += (sign.x) * (sin(angle * PI / (RIGHTANGLE * 2))) * distance;
-    p.y += (sign.y) * (cos(angle * PI / (RIGHTANGLE * 2))) * distance;
+    x += (sign.x) * (sin(angle * PI / (RIGHTANGLE * 2))) * distance;
+    y += (sign.y) * (cos(angle * PI / (RIGHTANGLE * 2))) * distance;
 
-    if (p.x > 0 - MIN_DISTANCE && p.x < 0)        //Para evitar el '-0'
-        p.x = 0;
-    if (p.y > 0 - MIN_DISTANCE && p.y < 0)
-        p.y = 0;
+    if (x > 0 - MIN_DISTANCE && x < 0)        //Para evitar el '-0'
+        x = 0;
+    if (y > 0 - MIN_DISTANCE && y < 0)
+        y = 0;
 
     return p;
 }
 
-bool Point::Equal(Point p1, Point p2) {
-    return (getDistanceBetweenPoints(p1, p2) < MIN_DISTANCE);
+bool Point::Equal(Point p2) {
+    return (getDistance(p2) < MIN_DISTANCE);
 }
