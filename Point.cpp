@@ -78,8 +78,6 @@ void Point::translate(double distance, double angle) {
         x = 0;
     if (y > 0 - MIN_DISTANCE && y < 0)
         y = 0;
-
-    return p;
 }
 
 bool Point::Equal(Point p2) {
