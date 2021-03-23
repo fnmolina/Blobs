@@ -1,7 +1,7 @@
 #include "Point.h"
 
 #include <iostream>
-#include <math.h>
+#include <cmath>
 
 #define PI acos(-1)
 #define MIN_DISTANCE 0.0001
@@ -33,11 +33,11 @@ void Point::print() {
 	cout << "(" << x << ", " << y  << ")";
 }
 
-double Point::getDistance(Point p2) {
+double Point::getDistance(Point& p2) {
     return sqrt(pow(p2.x - x, 2) + pow((p2.y - y), 2));
 }
 
-double Point::getAngle(Point p2) {
+double Point::getAngle(Point& p2) {
     if (x == p2.x && y == p2.y) {
         printf("Can't compare angle of the same points.\n");
         return FALSE;
@@ -80,6 +80,36 @@ void Point::translate(double distance, double angle) {
         y = 0;
 }
 
-bool Point::Equal(Point p2) {
+bool Point::Equal(Point& p2) {
     return (getDistance(p2) < MIN_DISTANCE);
+}
+
+bool Point::checkPointInCircle(Point& p2, float r) {
+    return (getDistance(p2) <= r);
+}
+
+bool Point::checkPointInRect(Point& p2, float maxX, float maxY) {
+
+    bool inside = false;
+    float angle = getAngle(p2);
+    float distance = getDistance(p2);
+    float x_distance = fabs(distance * cos(angle));
+    float y_distance = fabs(distance * sin(angle));
+    if (x_distance < maxX || y_distance < maxY)
+        inside = true;
+    return inside;
+}
+
+Point Point::closerPoint(Point p[], int maxPoint) {
+    int index = 0;
+    double aux;
+    double closer = getDistance(p[index]);
+    for (int i = 1; i < maxPoint; i++) {
+        aux = getDistance(p[i]);
+        if (aux < closer) {
+            closer = aux;
+            index = i;
+        }    
+    }
+    return p[index];
 }

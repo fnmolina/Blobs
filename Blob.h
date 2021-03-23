@@ -19,10 +19,13 @@ public:
 	Blob(int mode = 1, int speedMax = 0, float speedProb = 0, float deathProbBabyBlob = 0.5);
 
 	void adjustMovement(Point& food, double SmellRadius);
+
+	//Ajusta velocidad de blob segun modo de simulacion.
+	void adjustSpeed(int mode, int speedMax, float speedProb);
+
 	void move(Point& food, double SmellRadius);
 	bool feed(void);
 	void merge(float averageX, float averageY, float averageDirection, float averageSpeed, float deathProbGrownBlob, float deathProbOldBlob);
-	void grow(void);
 	void birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb);
 	void destroy(Blob* b);
 	void death();

@@ -151,11 +151,41 @@ void World::destroyWorld() {
 }
 
 //Mueve todos los blobs vivos mediante el metodo move de Blob.
-void World::moveBlobs() {
+void World::moveBlobs(float smellRadius) {
 
-	for (int i = 0; i <= lastBlob; i++) {
+	bool collision = false;
+	Point foodInArea[MAX_FOOD_IN_AREA];
+
+	for (int i = 0, int f = 0; i <= lastBlob; i++) {
 		if (blobs[i].etaryGroup != DEATH) {
-			blobs[i].move();
+			//Verifica si hay alguna comida dentro del smellradius
+			for (int k = 0; k < foodSpaceSize; k++) {	
+				if (food[k].state != EATEN) {
+					collision = checkFoodInArea(i, food[k].position, smellRadius);
+					if (collision) {
+						foodInArea[f++] = food[k].position;	//Guarda posicion de blob colisionado en arreglo. 
+					}
+				}
+			}
+			if (f > 0) {	//Busca la comida mas cercana de entre todas las que estan dentro del smell radius.
+				foodInArea[0] = blobs[i].position.closerPoint(foodInArea, f);	
+				blobs[i].move(foodInArea[0], smellRadius);
+			}
+			else {	//Si no se encontro comida en el rango del smellRadius, se mueve sin cambiar la direccion de movimiento.
+				foodInArea[0].x = OUT_OF_RANGE;	//Se indica que el punto a comparar esta fuera de rango
+				foodInArea[0].y = OUT_OF_RANGE;
+			}
+			blobs[i].move(foodInArea[0], smellRadius);
+			
+
+		}
+	}
+}
+//Ajusta velocidad de todos los blobs segun modo de simulacion.
+void World::adjustBlobsSpeed(int mode, int speedMax, float speedProb) {
+	for (int i = 0; i < lastBlob; i++) {
+		if (blobs[i].etaryGroup != DEATH) {
+			blobs[i].adjustSpeed(mode, speedMax, speedProb);
 		}
 	}
 }
@@ -193,7 +223,7 @@ void World::feedBlobs(float deathProbBabyBlob, int mode, int speedMax, float spe
 		if (blobs[i].etaryGroup != DEATH) {		//Verifica si se trata de un Blob vivo.
 			for (int k = 0; k < foodSpaceSize; k++) {	//De ser ese el caso, verifica si hay colision con varios food.
 				if (food[k].state != EATEN) {
-					collision = checkFoodInArea(blobs[i].position, food[k].position);
+					collision = checkFoodInArea(i, food[k].position);
 					if (collision) {
 						foodToEat[f++] = k;	//Guarda posicion de blob colisionado en arreglo. 
 					}
@@ -232,17 +262,31 @@ void World::blobFeeding(int foodToEat[], int foodNum, int blobIndex, float death
 	}
 }
 
-//Chequea colision entre blob y food.
-bool World::checkFoodInArea(Point& p1, Point& p2) {
-
-	bool collision = false;
-	float angle = p1.getAngle(p2);
-	float distance = p1.getDistance(p2);
-	float x_distance = fabs(distance * cos(angle));
-	float y_distance = fabs(distance * sin(angle));
-	if (x_distance < (BABYBLOB_CELL/2 + FOOD_CELL/2) || y_distance < (BABYBLOB_CELL / 2 + FOOD_CELL / 2))
-		collision = true;
-	return collision;
+//Chequea si food colisiona o se encuentra dentro del smellradius respecto al blob.
+bool World::checkFoodInArea(int blobIndex, Point& p2, float smellRadius) {
+	bool check = false;
+	//En caso de no haberse cargado un smellradius, por defecto se entiende que se busca chequear colision.
+	if (smellRadius < 0) {
+		float distance = FOOD_CELL / 2;
+		//Segun el grupo etario, varia el tamano de la blobcell.
+		switch (blobs[blobIndex].etaryGroup) {
+		case BABY_BLOB:
+			distance += BABYBLOB_CELL / 2;
+			break;
+		case GROWN_BLOB:
+			distance += GROWNBLOB_CELL / 2;
+			break;
+		case GOOD_OLD_BLOB:
+			distance += OLDBLOB_CELL / 2;
+			break;
+		}
+		check = blobs[blobIndex].position.checkPointInRect(p2, distance, distance);
+	}
+	//En caso de querer chequear si una comida esta dentro del smell radius, se calcula la distancia respecto a un circulo.
+	else {
+		check = blobs[blobIndex].position.checkPointInCircle(p2, smellRadius);
+	}
+	return check;
 }
 
 //Busca colisiones entre blobs.
@@ -289,7 +333,7 @@ void World::mergeBlobs(int blobsToMerge[], int blobNum, float randomJiggleLimit,
 		}
 	}
 	averageX = blobs[blobMerged].position.x / blobNum;
-	averageY = blobs[blobMerged].position.x / blobNum;
+	averageY = blobs[blobMerged].position.y / blobNum;
 	averageSpeed = blobs[blobMerged].speed / blobNum;
 	averageDirection = blobs[blobMerged].direction / blobNum;
 	averageDirection += randomJiggleLimit;	//suma randomJiggleLimit
@@ -302,26 +346,22 @@ void World::mergeBlobs(int blobsToMerge[], int blobNum, float randomJiggleLimit,
 //Verifica si ocurre una colision entre blobs.
 bool World::checkBlobsCollision(Blob& b1, Blob& b2) {
 
-	float angle, distance, x_distance, y_distance;
 	bool collision = false;
 	//Si los blobs comparados son del mismo grupo etario, se pasa a calcular sus distancias para luego compararlas segun el grupo etario.
 	if (b1.etaryGroup == b2.etaryGroup) {
-		angle = b1.position.getAngle(b2.position);
-		distance = b1.position.getDistance(b2.position);
-		x_distance = fabs(distance * cos(angle));
-		y_distance = fabs(distance * sin(angle));
-		if (b1.etaryGroup == BABY_BLOB) {
-			if (x_distance < BABYBLOB_CELL || y_distance < BABYBLOB_CELL)
-				collision = true;
+		float distance = 0;
+		switch (b1.etaryGroup) {
+			case BABY_BLOB:
+				distance = BABYBLOB_CELL;
+				break;
+			case GROWN_BLOB:
+				distance = GROWNBLOB_CELL;
+				break;
+			case GOOD_OLD_BLOB:
+				distance = OLDBLOB_CELL;
+				break;
 		}
-		else if (b1.etaryGroup == GROWN_BLOB) {
-			if (x_distance < GROWNBLOB_CELL || y_distance < GROWNBLOB_CELL)
-				collision = true;
-		}
-		else if (b1.etaryGroup == GOOD_OLD_BLOB) {
-			if (x_distance < OLDBLOB_CELL || y_distance < OLDBLOB_CELL)
-				collision = true;
-		}
+		collision = b1.position.checkPointInRect(b2.position, distance, distance);
 	}
 	return collision;
 }

@@ -41,13 +41,7 @@ Blob::Blob(int mode, int speedMax, float speedProb, float deathProbBabyBlob) {
 	etaryGroup = BABY_BLOB;
 	foodCount = 0;
 	deathProb = deathProbBabyBlob; 
-	if (mode == 1) {
-		speed = speedMax;
-	}
-	else {
-		speed = random(speedMax);
-	}
-	speed *= speedProb;
+	adjustSpeed(mode, speedMax, speedProb);
 }
 
 //Si la distancia entre el blob y la comida es menor o igual que SmellRadius entonces se dirige hacia la comida.
@@ -57,6 +51,17 @@ void Blob::adjustMovement (Point& food, double SmellRadius) {
 		direction = position.getAngle(food);
 	}
 	return;
+}
+
+//Ajusta velocidad de blob segun modo de simulacion.
+void Blob::adjustSpeed(int mode, int speedMax, float speedProb) {
+	if (mode == 1) {
+		speed = speedMax;
+	}
+	else {
+		speed = random(speedMax);
+	}
+	speed *= speedProb;
 }
 
 //Cambia la posicion del blob.
@@ -96,19 +101,6 @@ bool Blob::feed(void) {
 	return birth;
 }
 
-void Blob::grow(void) {
-	switch (etaryGroup) {
-	case BABY_BLOB:
-		etaryGroup = GROWN_BLOB;
-		break;
-	case GROWN_BLOB:
-		etaryGroup = GOOD_OLD_BLOB;
-		break;
-	case GOOD_OLD_BLOB:
-		//no se q pasaria aca, lo matamos?
-		break;
-	}
-}
 
 void Blob::merge(float averageX, float averageY, float averageDirection, float averageSpeed, float deathProbGrownBlob, float deathProbOldBlob) {
 	switch (etaryGroup) {
@@ -121,7 +113,6 @@ void Blob::merge(float averageX, float averageY, float averageDirection, float a
 		deathProb = deathProbOldBlob;
 		break;
 	case GOOD_OLD_BLOB:
-		//no se q pasaria aca, lo matamos?
 		break;
 	}
 	position.x = averageX;
@@ -132,18 +123,12 @@ void Blob::merge(float averageX, float averageY, float averageDirection, float a
 
 void Blob::birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb) {
 	position.x = blobMom.position.x;	//ESTO HAY QUE CAMBIAR
-	position.x = blobMom.position.y;
+	position.y = blobMom.position.y;
 	direction = -blobMom.direction; //direccion de movimiento
 	etaryGroup = BABY_BLOB;
 	foodCount = 0;
 	deathProb = deathProbBabyBlob;
-	if (mode == 1) {
-		speed = speedMax;
-	}
-	else {
-		speed = random(speedMax);
-	}
-	speed *= speedProb;
+	adjustSpeed(mode, speedMax, speedProb);
 }
 
 void Blob::destroy(Blob* b) {
