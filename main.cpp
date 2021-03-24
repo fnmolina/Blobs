@@ -3,6 +3,10 @@
 #include <ctime>
 #include "World.h"
 
+#define FOOD_BITMAP_SIZE 20
+#define BABY_BITMAP_SIZE 40
+#define BLOB_BITMAP_SIZE 45
+#define OLD_BITMAP_SIZE 80
 
 using namespace std;
 
@@ -23,7 +27,11 @@ int main() {
 
 	World w;
 
-	w.createWorld(&data);
+	int x = 900;
+	int y = 900;
+	float movement = 1;
+
+	w.createWorld(&data, x, y);
 
 	for (int i = 0; i < data.initialBlobs; i++) {
 		cout << "(" << w.blobs[i].position.x << "," << w.blobs[i].position.y << ")" << endl;
@@ -32,7 +40,7 @@ int main() {
 		cout << "(" << w.food[i].position.x << "," << w.food[i].position.y << ")" << endl;
 	}
 
-	w.moveBlobs(data.smellRadius);
+	w.moveBlobs(movement, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE, data.smellRadius);
 	cout << "BLOB 0" << "(" << w.blobs[0].position.x << "," << w.blobs[0].position.y << ")" << endl;
 
 	data.speedMax = 20;
@@ -46,7 +54,7 @@ int main() {
 	for (int i = 0; i < data.initialBlobs; i++) {
 		cout << "BLOB ETARY GROUP" << w.blobs[i].etaryGroup << endl;
 	}
-	w.killBlobs();
+	w.killBlobs(data.deathProbBabyBlob, data.deathProbGrownBlob, data.deathProbOldBlob);
 
 	cout << endl;
 
@@ -59,7 +67,7 @@ int main() {
 	for (int i = 0; i < data.initialBlobs; i++) {
 		cout << "BLOB food count" << w.blobs[i].foodCount << endl;
 	}
-	w.feedBlobs(data.deathProbBabyBlob, data.mode, data.speedMax, data.speedProb);
+	w.feedBlobs(x, y, data.mode, data.speedMax, data.speedProb, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE);
 	cout << endl;
 	for (int i = 0; i < data.initialBlobs; i++) {
 		cout << "BLOB food count" << w.blobs[i].foodCount << endl;
@@ -69,7 +77,7 @@ int main() {
 		cout << "BLOB food state" << w.food[i].state << endl;
 	}
 	cout << endl;
-	w.manageFood(data.foodCount);
+	w.manageFood(data.foodCount, x, y);
 
 	for (int i = 0; i < data.foodCount; i++) {
 		cout << "BLOB food state" << w.food[i].state << endl;
@@ -81,7 +89,7 @@ int main() {
 	}
 	cout << endl;
 
-	w.blobCollision(data.randomJiggleLimit, data.deathProbGrownBlob, data.deathProbOldBlob);
+	w.blobCollision(BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, data.randomJiggleLimit);
 
 	for (int i = 0; i < data.initialBlobs; i++) {
 		cout << "BLOB ETARY GROUP" << w.blobs[i].etaryGroup << endl;
@@ -93,8 +101,8 @@ int main() {
 	}
 	cout << endl;
 
-	w.moveBlobs(data.smellRadius);
-	w.blobCollision(data.randomJiggleLimit, data.deathProbGrownBlob, data.deathProbOldBlob);
+	w.moveBlobs(movement, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE, data.smellRadius);
+	w.blobCollision(BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, data.randomJiggleLimit);
 
 	for (int i = 0; i < data.initialBlobs; i++) {
 		cout << "BLOB ETARY GROUP" << w.blobs[i].etaryGroup << endl;

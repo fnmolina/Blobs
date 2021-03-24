@@ -1,42 +1,18 @@
 #include <iostream>
 #include "Blob.h"
 
-#define MOVEMENT 1//No se si lo tendria q relacionar con la velocidad del muñequito
 
 #define MAX_ANGLE	360
 
 using namespace std;
 
-/*
-Blob::Blob() {
-	position = (rand()%SCREEN_W, rand()%SCREEN_H);
-	direction = rand()%360; //direccion de movimiento
-	switch (etaryGroup){
-		case BABY_BLOB:
-			etaryGroup = GROWN_BLOB;
-			break;
-		case GROWN_BLOB:
-			etaryGroup = GOOD_OLD_BLOB;
-			break;
-		case GOOD_OLD_BLOB:
-			//No tengo idea que deberia pasar aca, pero no deberia ser lo mismo que el default. No se si matarlo o que.
-			break;
-		default:
-			etaryGroup = BABY_BLOB;
-			break;
-	}
-	foodCount = 0;
-	deathProb = random(1); //Valor random entre 0 y 1?????????
-	speed = 0;
-}*/
+//Constructor de blob definido mediante argumentos por defecto.
+Blob::Blob(int Xsize, int Ysize, bool mode, int speedMax, float speedProb) {
 
-Blob::Blob(int mode, int speedMax, float speedProb, float deathProbBabyBlob) {
-
-	position = {random(SCREEN_W), random(SCREEN_H)};
+	position = {random(Xsize), random(Ysize)};
 	direction = random(MAX_ANGLE); //direccion de movimiento
 	etaryGroup = BABY_BLOB;
 	foodCount = 0;
-	deathProb = deathProbBabyBlob; 
 	adjustSpeed(mode, speedMax, speedProb);
 }
 
@@ -49,9 +25,9 @@ void Blob::adjustMovement (Point& food, double SmellRadius) {
 }
 
 //Ajusta velocidad de blob segun modo de simulacion.
-void Blob::adjustSpeed(int mode, int speedMax, float speedProb) {
-	if (mode == 1) {
-		speed = speedMax;
+void Blob::adjustSpeed(bool mode, int speedMax, float speedProb) {
+	if (!mode) {	//Si es modo 1
+		speed = (float) speedMax;
 	}
 	else {
 		speed = random(speedMax);
@@ -60,9 +36,9 @@ void Blob::adjustSpeed(int mode, int speedMax, float speedProb) {
 }
 
 //Cambia la posicion del blob.
-void Blob::move (Point& food, double SmellRadius) {
+void Blob::move (Point& food, double SmellRadius, float movement) {
 	adjustMovement(food, SmellRadius);
-	position.translate(MOVEMENT, direction);
+	position.translate(movement, direction);
 	if (position.x > SCREEN_W){
 		position.x = 0;
 	}
@@ -70,19 +46,20 @@ void Blob::move (Point& food, double SmellRadius) {
 		position.x = SCREEN_W;
 	}
 	if (position.y > SCREEN_H){
-		position.y == 0;
+		position.y = 0;
 	}
 	else if (position.y < 0){
 		position.y = SCREEN_H;
 	}
 }	
 
+//Alimenta blob y devuelve indicador de babyBirth.
 bool Blob::feed(void) {
-	++foodCount;
+	++foodCount;	//Incrementa contador interno de alimento.
 	bool birth = false;
-	switch (etaryGroup) {
+	switch (etaryGroup) {	//Con una cierta cantidad de alimento, se da indicacion de nacimiento.
 	case BABY_BLOB:
-		if (foodCount == 3){
+		if (foodCount == 3) {	
 			foodCount = 0;
 			birth = true;
 		}
@@ -103,44 +80,50 @@ bool Blob::feed(void) {
 	return birth;
 }
 
-
-void Blob::merge(float averageX, float averageY, float averageDirection, float averageSpeed, float deathProbGrownBlob, float deathProbOldBlob) {
-	switch (etaryGroup) {
+//Se mergean blobs en uno. Para ello se reciben datos de nuevas posiciones, direcciones y probabilidades de muerte segun evolucion de blob.
+void Blob::merge(float averageX, float averageY, float averageDirection, float averageSpeed) {
+	switch (etaryGroup) {	//Se evoluciona el blob y probabilidad de muerte.
 	case BABY_BLOB:
 		etaryGroup = GROWN_BLOB;
-		deathProb = deathProbGrownBlob;
 		break;
 	case GROWN_BLOB:
 		etaryGroup = GOOD_OLD_BLOB;
-		deathProb = deathProbOldBlob;
 		break;
 	case GOOD_OLD_BLOB:
 		break;
 	}
-	position.x = averageX;
+	position.x = averageX;	//Se cargan nuevas posiciones, direcciones y velocidad.
 	position.y = averageY;
 	direction = averageDirection;
 	speed = averageSpeed;
 }
 
-void Blob::birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb) {\
-	cout << "BIRTH" << endl;
-	position.x = blobMom.position.x;	//ESTO HAY QUE CAMBIAR
+//Se produce el milagro del nacimiento de un babyBlob y se lo carga en un estado etario transitorio
+void Blob::birth(Blob& blobMom, int mode, int speedMax, float speedProb) {
+	position.x = blobMom.position.x;	
 	position.y = blobMom.position.y;
-	direction = -blobMom.direction; //direccion de movimiento
-	etaryGroup = BABY_BLOB;
+	direction = -blobMom.direction; 
+	etaryGroup = BIRTH;
 	foodCount = 0;
-	deathProb = deathProbBabyBlob;
 	adjustSpeed(mode, speedMax, speedProb);
 }
 
-void Blob::destroy(Blob* b) {
-	b = NULL;
-}
-
-void Blob::death() {
-	double death = random(1);
-	if (death < deathProb) {
+//Actualiza probabilidad de muerte segun grupo etario y decide si matar a un blob.
+void Blob::death(float deathProbBabyBlob, float deathProbGrownBlob, float deathProbOldBlob) {
+	float deathProb = 0;
+	switch (etaryGroup) {
+	case BABY_BLOB:
+		deathProb = deathProbBabyBlob;
+		break;
+	case GROWN_BLOB:
+		deathProb = deathProbGrownBlob;
+		break;
+	case GOOD_OLD_BLOB:
+		deathProb = deathProbOldBlob;
+		break;
+	}
+	double death = random(1);	//Calcula probabilidad de muerte 
+	if (death < deathProb) {	//Y decide si lo mata o no.
 		etaryGroup = DEATH;
 	}
 }

@@ -8,19 +8,15 @@
 #define NOT_EATEN 1
 
 class Food {
+
 public:
 	Point position;
 	int state;
 
 	//Constructor de Food.
-	Food();
+	Food(int Xsize = 1, int Ysize = 1);
 
-	//Esta funcion se encarga de crear Food y devolver un puntero a lo creado.
-	//Food* create();
-	//Esta funcion se encarga de eliminar Food, cambiandole el estado y poniendole puntero null.
-	//void destroy(Food* f);
 };
-
 
 
 #endif //__FOOD_H

@@ -14,39 +14,43 @@
 
 using namespace std;
 
+//Constructor
 Point::Point(float x, float y)
 {
 	this->x = x;
 	this->y = y;
 }
 
+//Mueve un punto con un offset
 void Point::move(Point& offset) {
 	x += offset.x;
 	y += offset.y;
 }
 
+//Mueve punto mediante posiciones
 void Point::move(float x, float y) {
-	//this->x += x; this es un puntero que solo es valido dentro de un metodo, vale la direccion del objeto con el que llama al metodo
 	this->x += x;
 	this->y += y;
 }
 
+//Imprime coordenadas en terminal
 void Point::print() {
 	cout << "(" << x << ", " << y  << ")";
 }
 
+//Calcula distancia entre dos puntos.
 float Point::getDistance(Point& p2) {
     return  (float) (sqrt(pow(p2.x - x, 2) + pow((p2.y - y), 2)));
 }
 
+//Calcula angulo entre dos puntos.
 float Point::getAngle(Point& p2) {
     float angle;
     if (x == p2.x && y == p2.y) {
-        //printf("Can't compare angle of the same points.\n");
         angle = 0;
         return angle;
     }
-    angle = atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI;  // Tomo el angulo como si fuera un triangulo rectangulo
+    angle = (float) (atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI);  // Tomo el angulo como si fuera un triangulo rectangulo
     if (angle < 0)
         angle = -angle;
     if (p2.x > x && p2.y < y)    // Verifico todas las posibilidades de distribuciones para obtener el angulo respecto el norte
@@ -58,10 +62,10 @@ float Point::getAngle(Point& p2) {
     return  (float) (angle);
 }
 
-
-void Point::translate(double distance, double angle) {
+//Translada un punto a otra posicion segun distancia y angulo.
+void Point::translate(float distance, float angle) {
     Point sign = { 1,1 };
-    double complement = 2 * angle / RIGHTANGLE;
+    float complement = 2 * angle / RIGHTANGLE;
 
     if (angle > RIGHTANGLE * 2)
         sign.x = -sign.x;                         //Verifico si por el angulo, la coordenada en x disminuye, en cuyo caso deberia restar
@@ -75,8 +79,8 @@ void Point::translate(double distance, double angle) {
         angle -= RIGHTANGLE;  // Para obtener el angulo respecto del triangulo rectangulo
 
     angle = complement * RIGHTANGLE - angle;   //Calculo el complemento
-    x += (sign.x) * (sin(angle * PI / (RIGHTANGLE * 2))) * distance;
-    y += (sign.y) * (cos(angle * PI / (RIGHTANGLE * 2))) * distance;
+    x += (float) ((sign.x) * (sin(angle * PI / (RIGHTANGLE * 2))) * distance);
+    y += (float) ((sign.y) * (cos(angle * PI / (RIGHTANGLE * 2))) * distance);
 
     if (x > 0 - MIN_DISTANCE && x < 0)        //Para evitar el '-0'
         x = 0;
@@ -84,14 +88,17 @@ void Point::translate(double distance, double angle) {
         y = 0;
 }
 
+// Verifica si dos puntos son muy proximos
 bool Point::Equal(Point& p2) {
     return (getDistance(p2) < MIN_DISTANCE);
 }
 
+// Verifica si el punto p2 se encuentra dentro de un circulo de radio centrado en (x,y)
 bool Point::checkPointInCircle(Point& p2, float r) {
     return (getDistance(p2) <= r);
 }
 
+// Verifica si el punto p2 se encuentra dentro de un rectangulo de lado 2*maxX y 2*maxY centrado en (x,y)
 bool Point::checkPointInRect(Point& p2, float maxX, float maxY) {
 
     bool inside = false;
@@ -104,6 +111,7 @@ bool Point::checkPointInRect(Point& p2, float maxX, float maxY) {
     return inside;
 }
 
+// Devuelve el indice del punto mas proximo de entre un arreglo de puntos.
 Point Point::closerPoint(Point p[], int maxPoint) {
     int index = 0;
     double aux;

@@ -1,11 +1,6 @@
 #ifndef __RESOURCES
 #define __RESOURCES
 
-#define BABYBLOB_CELL	40
-#define GROWNBLOB_CELL	45	
-#define OLDBLOB_CELL	80
-
-#define FOOD_CELL		20
 
 #define SCREEN_W	100
 #define SCREEN_H	100
@@ -18,10 +13,7 @@
 #define BLOB_SPRT "grownblob.png"
 #define OLD_SPRT "goodoldblob.png"
 
-#define FOOD_BITMAP_SIZE 20
-#define BABY_BITMAP_SIZE 40
-#define BLOB_BITMAP_SIZE 45
-#define OLD_BITMAP_SIZE 80
+
 
 //font
 #define FONT "Font/stupid.ttf"

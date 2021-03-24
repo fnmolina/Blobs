@@ -5,37 +5,39 @@
 #include "Point.h"
 #include "resources.h"
 
-enum BLOBS {DEATH, BABY_BLOB, GROWN_BLOB, GOOD_OLD_BLOB};
+enum BLOBS {DEATH, BABY_BLOB, GROWN_BLOB, GOOD_OLD_BLOB, BIRTH};
 
 class Blob {
 public:
 	Point position;
-	float direction; //direccion de movimiento
+	float direction; 
 	int etaryGroup;
 	int foodCount;
-	float deathProb;
 	float speed;
 
-	//Blob();
-	Blob(int mode = 1, int speedMax = 0, float speedProb = 0, float deathProbBabyBlob = 0.5);
+	//Constructor de blob definido mediante argumentos por defecto.
+	Blob(int Xsize = 1, int Ysize = 1, bool mode = true, int speedMax = 1, float speedProb = 0);
 
+	//Si la distancia entre el blob y la comida es menor o igual que SmellRadius entonces se dirige hacia la comida.
 	void adjustMovement(Point& food, double SmellRadius);
 
 	//Ajusta velocidad de blob segun modo de simulacion.
-	void adjustSpeed(int mode, int speedMax, float speedProb);
+	void adjustSpeed(bool mode, int speedMax, float speedProb);
 
-	void move(Point& food, double SmellRadius);
+	//Cambia la posicion del blob.
+	void move(Point& food, double SmellRadius, float movement);
+
+	//Alimenta blob y devuelve indicador de babyBirth.
 	bool feed(void);
-	void merge(float averageX, float averageY, float averageDirection, float averageSpeed, float deathProbGrownBlob, float deathProbOldBlob);
-	void birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb);
-	void destroy(Blob* b);
-	void death();
 
-	//adjustMovement; -- > usa smell radius
-	//moveBlobs; -- > usa movement
-	//destroyBlob;
-	//feedBlob;
-	//grow;
+	//Se mergean blobs en uno. Para ello se reciben datos de nuevas posiciones, direcciones y probabilidades de muerte segun evolucion de blob.
+	void merge(float averageX, float averageY, float averageDirection, float averageSpeed);
+
+	//Se produce el milagro del nacimiento de un babyBlob y se lo carga en un estado etario transitorio
+	void birth(Blob& blobMom, int mode, int speedMax, float speedProb);
+
+	//Actualiza probabilidad de muerte segun grupo etario y decide si matar a un blob.
+	void death(float deathProbBabyBlob, float deathProbGrownBlob, float deathProbOldBlob);
 
 };
 
