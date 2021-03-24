@@ -11,6 +11,7 @@ World::World() {
 	blobs = NULL;
 	blobCount = 0;
 	lastBlob = 0;
+	blobSpaceSize = 0;
 
 	food = NULL;
 	foodInWorld = 0;
@@ -76,7 +77,7 @@ void World::createFood(int foodCount) {
 
 	foodInWorld = foodCount;
 	foodSpaceSize = foodCount;
-	food = (Food*) malloc(sizeof(Food) * foodSpaceSize);
+	food = (Food*) malloc(sizeof(Food) * foodCount);
 	if (food != NULL) {
 		for (int i = 0; i < foodCount; i++) {
 			food[i] = Food();
@@ -152,11 +153,11 @@ void World::destroyWorld() {
 
 //Mueve todos los blobs vivos mediante el metodo move de Blob.
 void World::moveBlobs(float smellRadius) {
-
+	int f, i;
 	bool collision = false;
 	Point foodInArea[MAX_FOOD_IN_AREA];
 
-	for (int i = 0, int f = 0; i <= lastBlob; i++) {
+	for (i = 0, f = 0; i <= lastBlob; i++) {
 		if (blobs[i].etaryGroup != DEATH) {
 			//Verifica si hay alguna comida dentro del smellradius
 			for (int k = 0; k < foodSpaceSize; k++) {	
@@ -213,13 +214,14 @@ void World::manageFood(int foodCount) {
 	}
 }
 
-//Cheque si hay colision entre blob y food.
+//Chequea si hay colision entre blob y food y alimenta los blobs.
 void World::feedBlobs(float deathProbBabyBlob, int mode, int speedMax, float speedProb) {
 
+	int i, f;
 	bool collision = false;
-	int foodToEat[MAX_FOOD_IN_AREA];	//Se utiliza un arreglo para guardar las posiciones de la comida colisionada.
+	int foodToEat[MAX_FOOD_IN_AREA] = { 0 };	//Se utiliza un arreglo para guardar las posiciones de la comida colisionada.
 	//Chequea si hay colision por cada blob y alimenta
-	for (int i = 0, int f = 0; i <= lastBlob; i++, f = 0) {		//m se utiliza como indice de blobs a mergear.
+	for (i = 0, f = 0; i <= lastBlob; i++, f = 0) {		//m se utiliza como indice de blobs a mergear.
 		if (blobs[i].etaryGroup != DEATH) {		//Verifica si se trata de un Blob vivo.
 			for (int k = 0; k < foodSpaceSize; k++) {	//De ser ese el caso, verifica si hay colision con varios food.
 				if (food[k].state != EATEN) {
@@ -239,6 +241,7 @@ void World::feedBlobs(float deathProbBabyBlob, int mode, int speedMax, float spe
 void World::blobFeeding(int foodToEat[], int foodNum, int blobIndex, float deathProbBabyBlob, int mode, int speedMax, float speedProb) {
 
 	int k, foodIndex, i;
+	bool check = false;
 
 	for (foodIndex = 0, i = 0; i < foodNum; i++)
 	{
@@ -248,9 +251,11 @@ void World::blobFeeding(int foodToEat[], int foodNum, int blobIndex, float death
 
 		//se llama a metodo de clase blob en el que se chequea el blob feeding y el blob birth.
 		if (blobs[blobIndex].feed()) {	//En caso de producirse el milagro del blob birth, se lo posiciona en el arreglo.
-			for (k = 0; k < blobSpaceSize; k++) {	
+			check = true;
+			for (k = 0; k < blobSpaceSize && check; k++) {	
 				if (blobs[k].etaryGroup == DEATH) {	//Se busca alguna posicion libre.
 					blobs[k].birth(blobs[blobIndex], deathProbBabyBlob, mode, speedMax, speedProb);
+					check = false;
 				}
 			}
 			//En caso de no haber posiciones libres en el arreglo, se agrega una nueva.
@@ -267,7 +272,7 @@ bool World::checkFoodInArea(int blobIndex, Point& p2, float smellRadius) {
 	bool check = false;
 	//En caso de no haberse cargado un smellradius, por defecto se entiende que se busca chequear colision.
 	if (smellRadius < 0) {
-		float distance = FOOD_CELL / 2;
+		float distance = (float) (FOOD_CELL / 2);
 		//Segun el grupo etario, varia el tamano de la blobcell.
 		switch (blobs[blobIndex].etaryGroup) {
 		case BABY_BLOB:
@@ -292,11 +297,12 @@ bool World::checkFoodInArea(int blobIndex, Point& p2, float smellRadius) {
 //Busca colisiones entre blobs.
 void World::blobCollision(float randomJiggleLimit, float deathProbGrownBlob, float deathProbOldBlob) {
 
+	int m, i;
 	bool collision = false;
-	int blobsToMerge[INITIAL_BLOB_SPACE];	//Se utiliza un arreglo para guardar las posiciones de los blobs colisionados.
+	int blobsToMerge[INITIAL_BLOB_SPACE] = { 0 };	//Se utiliza un arreglo para guardar las posiciones de los blobs colisionados.
 
 	//Chequea si hay colision por cada blob y mergea. Notar que no hace falta comparar el ultimo blob.
-	for (int i = 0, int m = 0; i < lastBlob; i++, m = 0) {		//m se utiliza como indice de blobs a mergear.
+	for (i = 0, m = 0; i < lastBlob; i++, m = 0) {		//m se utiliza como indice de blobs a mergear.
 		if (blobs[i].etaryGroup != DEATH) {		//Verifica si se trata de un Blob vivo.
 			blobsToMerge[m] = i; //Ante todo, guardo blob a comparar.
 			for (int k = i + 1; k <= lastBlob; k++) {	//De ser ese el caso, verifica si hay colision con otros blobs.
@@ -307,8 +313,9 @@ void World::blobCollision(float randomJiggleLimit, float deathProbGrownBlob, flo
 					}
 				}
 			}
-			if(m > 0)
+			if (m > 0) {
 				this->mergeBlobs(blobsToMerge, ++m, randomJiggleLimit, deathProbGrownBlob, deathProbOldBlob);
+			}
 		}
 	}
 }
@@ -319,8 +326,7 @@ void World::mergeBlobs(int blobsToMerge[], int blobNum, float randomJiggleLimit,
 	int i = 0;
 	int blobMerged = blobsToMerge[i]; //Se realiza el mergeo sobre el primer blob analizado.
 	float averageX, averageY, averageDirection, averageSpeed;
-	for (int blobIndex = 0, i = 1; i < blobNum; i++)
-	{ 
+	for (int blobIndex = 0, i = 1; i < blobNum; i++) { 
 		blobIndex = blobsToMerge[i];
 		blobs[blobMerged].position.x += blobs[blobIndex].position.x; //Se guardan las posiciones y las direcciones promedio.
 		blobs[blobMerged].position.y += blobs[blobIndex].position.y;
@@ -337,8 +343,9 @@ void World::mergeBlobs(int blobsToMerge[], int blobNum, float randomJiggleLimit,
 	averageSpeed = blobs[blobMerged].speed / blobNum;
 	averageDirection = blobs[blobMerged].direction / blobNum;
 	averageDirection += randomJiggleLimit;	//suma randomJiggleLimit
-	if (averageDirection > 360)	//En el caso que el angulo supere 360, se normaliza.
+	if (averageDirection > 360) {	//En el caso que el angulo supere 360, se normaliza.
 		averageDirection -= 360;
+	}
 	//Finalmente, se cambian parametros internos del blob mergeado.
 	blobs[blobMerged].merge(averageX, averageY, averageDirection, averageSpeed, deathProbGrownBlob, deathProbOldBlob);
 }

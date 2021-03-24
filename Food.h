@@ -1,6 +1,7 @@
 #ifndef __FOOD_H
 #define __FOOD_H
 
+#include "resources.h"
 #include "Point.h"
 
 #define EATEN 0
@@ -15,9 +16,11 @@ public:
 	Food();
 
 	//Esta funcion se encarga de crear Food y devolver un puntero a lo creado.
-	Food* create();
+	//Food* create();
 	//Esta funcion se encarga de eliminar Food, cambiandole el estado y poniendole puntero null.
-	void destroy(Food* f);
+	//void destroy(Food* f);
 };
+
+
 
 #endif //__FOOD_H

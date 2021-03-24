@@ -146,12 +146,13 @@
     <ClCompile Include="Food.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="resources.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Blob.h" />
     <ClInclude Include="Food.h" />
-    <ClInclude Include="logic.h" />
+    <ClInclude Include="resources.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

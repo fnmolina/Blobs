@@ -1,15 +1,11 @@
 #include <iostream>
 #include "Blob.h"
 
-//Otra vez, necesitaria o que me manden el max de x e y como parametro o que haya un define
-#define SCREEN_W 1
-#define SCREEN_H 2
-
 #define MOVEMENT 1//No se si lo tendria q relacionar con la velocidad del muñequito
 
-#define DEC_PRECISION 1000
-
 #define MAX_ANGLE	360
+
+using namespace std;
 
 /*
 Blob::Blob() {
@@ -36,7 +32,7 @@ Blob::Blob() {
 
 Blob::Blob(int mode, int speedMax, float speedProb, float deathProbBabyBlob) {
 
-	position = (random(SCREEN_W), random(SCREEN_H));
+	position = {random(SCREEN_W), random(SCREEN_H)};
 	direction = random(MAX_ANGLE); //direccion de movimiento
 	etaryGroup = BABY_BLOB;
 	foodCount = 0;
@@ -87,16 +83,19 @@ bool Blob::feed(void) {
 	switch (etaryGroup) {
 	case BABY_BLOB:
 		if (foodCount == 3){
+			foodCount = 0;
 			birth = true;
 		}
 		break;
 	case GROWN_BLOB:
 		if (foodCount == 4) {
+			foodCount = 0;
 			birth = true;
 		}
 		break;
 	case GOOD_OLD_BLOB:
 		if (foodCount == 5) {
+			foodCount = 0;
 			birth = true;
 		}
 		break;
@@ -124,7 +123,8 @@ void Blob::merge(float averageX, float averageY, float averageDirection, float a
 	speed = averageSpeed;
 }
 
-void Blob::birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb) {
+void Blob::birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb) {\
+	cout << "BIRTH" << endl;
 	position.x = blobMom.position.x;	//ESTO HAY QUE CAMBIAR
 	position.y = blobMom.position.y;
 	direction = -blobMom.direction; //direccion de movimiento
@@ -145,11 +145,5 @@ void Blob::death() {
 	}
 }
 
-//DEVUELVE UN NÚMERO ALEATORIO FLOAT ENTRE 0 Y "max".
-double Blob::random(int max){
-	double units, dec;
-	units = rand() % max;	//Se calcula aleatoriamente las unidades
-	dec = rand() % DEC_PRECISION;	//Se calculan los puntos decimales
-	return ((double)units + (double)(dec / DEC_PRECISION));	//Se suman ambos y se devuelve el numero
-}
+
 

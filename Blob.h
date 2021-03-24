@@ -3,6 +3,7 @@
 #define __BLOB_H
 
 #include "Point.h"
+#include "resources.h"
 
 enum BLOBS {DEATH, BABY_BLOB, GROWN_BLOB, GOOD_OLD_BLOB};
 
@@ -29,10 +30,6 @@ public:
 	void birth(Blob& blobMom, float deathProbBabyBlob, int mode, int speedMax, float speedProb);
 	void destroy(Blob* b);
 	void death();
-
-private:
-
-	double random(int max);
 
 	//adjustMovement; -- > usa smell radius
 	//moveBlobs; -- > usa movement

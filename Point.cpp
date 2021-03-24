@@ -1,9 +1,11 @@
 #include "Point.h"
 
 #include <iostream>
+
 #include <cmath>
 
-#define PI acos(-1)
+#define     PI      acos(-1)
+
 #define MIN_DISTANCE 0.0001
 
 #define TRUE 1
@@ -33,16 +35,18 @@ void Point::print() {
 	cout << "(" << x << ", " << y  << ")";
 }
 
-double Point::getDistance(Point& p2) {
-    return sqrt(pow(p2.x - x, 2) + pow((p2.y - y), 2));
+float Point::getDistance(Point& p2) {
+    return  (float) (sqrt(pow(p2.x - x, 2) + pow((p2.y - y), 2)));
 }
 
-double Point::getAngle(Point& p2) {
+float Point::getAngle(Point& p2) {
+    float angle;
     if (x == p2.x && y == p2.y) {
-        printf("Can't compare angle of the same points.\n");
-        return FALSE;
+        //printf("Can't compare angle of the same points.\n");
+        angle = 0;
+        return angle;
     }
-    float angle = atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI;  // Tomo el angulo como si fuera un triangulo rectangulo
+    angle = atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI;  // Tomo el angulo como si fuera un triangulo rectangulo
     if (angle < 0)
         angle = -angle;
     if (p2.x > x && p2.y < y)    // Verifico todas las posibilidades de distribuciones para obtener el angulo respecto el norte
@@ -51,7 +55,7 @@ double Point::getAngle(Point& p2) {
         angle = RIGHTANGLE * 4 - angle;
     else if (p2.x < x && p2.y < y)
         angle += RIGHTANGLE * 2;
-    return angle;
+    return  (float) (angle);
 }
 
 
@@ -91,10 +95,10 @@ bool Point::checkPointInCircle(Point& p2, float r) {
 bool Point::checkPointInRect(Point& p2, float maxX, float maxY) {
 
     bool inside = false;
-    float angle = getAngle(p2);
-    float distance = getDistance(p2);
-    float x_distance = fabs(distance * cos(angle));
-    float y_distance = fabs(distance * sin(angle));
+    double angle = getAngle(p2);
+    double distance = getDistance(p2);
+    double x_distance = fabs(distance * cos(angle));
+    double y_distance = fabs(distance * sin(angle));
     if (x_distance < maxX || y_distance < maxY)
         inside = true;
     return inside;
@@ -113,3 +117,6 @@ Point Point::closerPoint(Point p[], int maxPoint) {
     }
     return p[index];
 }
+
+
+

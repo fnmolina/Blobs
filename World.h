@@ -1,14 +1,14 @@
 #ifndef __WORLD
 #define __WORLD
 
-#include "logic.h"
+#include "resources.h"
 #include "Blob.h"
 #include "Point.h"
 #include "Food.h"
 
 #define	MAX_FOOD_IN_AREA	20
 
-#define INITIAL_BLOB_SPACE	3000
+#define INITIAL_BLOB_SPACE	5000
 
 class World {
 public:
@@ -55,7 +55,7 @@ public:
 	//Mantiene cantidad de comida en niveles de foodCount.
 	void manageFood(int foodCount);
 
-	//Cheque si hay colision entre blob y food.
+	//Chequea si hay colision entre blob y food.
 	void feedBlobs(float deathProbBabyBlob, int mode, int speedMax, float speedProb);
 
 	//Alimenta al blob con toda la comida que encuentra.
