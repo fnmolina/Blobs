@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <allegro5\allegro.h>
 #include <allegro5\allegro_image.h>
@@ -116,9 +115,9 @@ int main(int argc, char* argv[]) {
 										// su dispatcher. Idem para io.WantCaptureMouse y los eventos de mouse
 										if ((ev.type == ALLEGRO_EVENT_TIMER) && (blobWorld.food != NULL)) {
 											blobWorld.adjustBlobsSpeed(uData.mode, uData.speedMax, uData.speedProb);
-											blobWorld.moveBlobs(DISP_W, BACKGROUND_VERTICAL_LIMIT - BABY_BITMAP_SIZE /2, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE, uData.smellRadius);
-											blobWorld.feedBlobs(DISP_W, BACKGROUND_VERTICAL_LIMIT - BABY_BITMAP_SIZE /2, uData.mode, uData.speedMax, uData.speedProb, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE);
-											blobWorld.manageFood(uData.foodCount, DISP_W, BACKGROUND_VERTICAL_LIMIT - BABY_BITMAP_SIZE /2);
+											blobWorld.moveBlobs(DISP_W, BACKGROUND_VERTICAL_LIMIT - BABY_BITMAP_SIZE / 2, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE, uData.smellRadius);
+											blobWorld.feedBlobs(DISP_W, BACKGROUND_VERTICAL_LIMIT - BABY_BITMAP_SIZE / 2, uData.mode, uData.speedMax, uData.speedProb, BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, FOOD_BITMAP_SIZE);
+											blobWorld.manageFood(uData.foodCount, DISP_W, BACKGROUND_VERTICAL_LIMIT - BABY_BITMAP_SIZE / 2);
 											blobWorld.blobCollision(BABY_BITMAP_SIZE, BLOB_BITMAP_SIZE, OLD_BITMAP_SIZE, uData.randomJiggleLimit);
 											blobWorld.killBlobs(uData.deathProbBabyBlob, uData.deathProbGrownBlob, uData.deathProbOldBlob);
 											refresh = true;
