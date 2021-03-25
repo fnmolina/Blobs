@@ -157,7 +157,7 @@ void World::moveBlobs(float movement, int babyBlobCell, int grownBlobCell, int o
 	bool collision = false;
 	Point foodInArea[MAX_FOOD_IN_AREA];
 
-	for (i = 0, f = 0; i <= lastBlob; i++) {
+	for (i = 0, f = 0; i <= lastBlob; i++, f = 0) {
 		if (blobs[i].etaryGroup != DEATH) {
 			//Verifica si hay alguna comida dentro del smellradius
 			for (int k = 0; k < foodSpaceSize; k++) {	
