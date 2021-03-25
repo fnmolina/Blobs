@@ -106,7 +106,7 @@ bool Point::checkPointInRect(Point& p2, float maxX, float maxY) {
     double distance = getDistance(p2);
     double x_distance = fabs(distance * cos(angle));
     double y_distance = fabs(distance * sin(angle));
-    if (x_distance < maxX || y_distance < maxY)
+    if (x_distance < maxX && y_distance < maxY)
         inside = true;
     return inside;
 }

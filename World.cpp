@@ -152,9 +152,9 @@ void World::destroyWorld() {
 }
 
 //Mueve todos los blobs vivos mediante el metodo move de Blob buscando la comida mas cercana.
-void World::moveBlobs(float movement, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell, float smellRadius) {
+void World::moveBlobs(int Xsize, int Ysize, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell, float smellRadius) {
 	int f, i;
-	bool collision = false;
+	bool check = false;
 	Point foodInArea[MAX_FOOD_IN_AREA];
 
 	for (i = 0, f = 0; i <= lastBlob; i++, f = 0) {
@@ -162,21 +162,21 @@ void World::moveBlobs(float movement, int babyBlobCell, int grownBlobCell, int o
 			//Verifica si hay alguna comida dentro del smellradius
 			for (int k = 0; k < foodSpaceSize; k++) {	
 				if (food[k].state != EATEN) {
-					collision = checkFoodInArea(i, food[k].position, babyBlobCell, grownBlobCell, oldBlobCell, foodCell, smellRadius);
-					if (collision) {
+					check = checkFoodInArea(i, food[k].position, babyBlobCell, grownBlobCell, oldBlobCell, foodCell, smellRadius);
+					if (check) {
 						foodInArea[f++] = food[k].position;	//Guarda posicion de blob colisionado en arreglo. 
 					}
 				}
 			}
-			if (f > 0) {	//Busca la comida mas cercana de entre todas las que estan dentro del smell radius.
+			if (f > 1) {	//Busca la comida mas cercana de entre todas las que estan dentro del smell radius.
 				foodInArea[0] = blobs[i].position.closerPoint(foodInArea, f);	
-				blobs[i].move(foodInArea[0], smellRadius, movement);
+				blobs[i].move(foodInArea[0], smellRadius, Xsize, Ysize);
 			}
 			else {	//Si no se encontro comida en el rango del smellRadius, se mueve sin cambiar la direccion de movimiento.
 				foodInArea[0].x = OUT_OF_RANGE;	//Se indica que el punto a comparar esta fuera de rango
 				foodInArea[0].y = OUT_OF_RANGE;
 			}
-			blobs[i].move(foodInArea[0], smellRadius, movement);
+			blobs[i].move(foodInArea[0], smellRadius, Xsize, Ysize);
 			
 
 		}
@@ -212,6 +212,7 @@ void World::manageFood(int foodCount, int Xsize, int Ysize) {
 			}
 		}
 	}
+	foodInWorld = foodCount;
 }
 
 //Chequea si hay colision entre blob y food y alimenta los blobs.
@@ -232,13 +233,13 @@ void World::feedBlobs(int Xsize, int Ysize, bool mode, int speedMax, float speed
 				}
 			}
 			if (f > 0)
-				blobFeeding(Xsize, Ysize, foodToEat, f, i, mode, speedMax, speedProb);
+				blobFeeding(Xsize, Ysize, foodToEat, f, i, mode, speedMax, speedProb, babyBlobCell, grownBlobCell, oldBlobCell);
 		}
 	}
 }
 
 //Alimenta al blob con toda la comida que encuentra.
-void World::blobFeeding(int Xsize, int Ysize, int * foodToEat, int foodNum, int blobIndex, bool mode, int speedMax, float speedProb) {
+void World::blobFeeding(int Xsize, int Ysize, int * foodToEat, int foodNum, int blobIndex, bool mode, int speedMax, float speedProb, int babyBlobCell, int grownBlobCell, int oldBlobCell) {
 
 	int k, foodIndex, i;
 	bool check = false;
@@ -251,31 +252,37 @@ void World::blobFeeding(int Xsize, int Ysize, int * foodToEat, int foodNum, int 
 
 		//se llama a metodo de clase blob en el que se chequea el blob feeding y el blob birth.
 		if (blobs[blobIndex].feed()) {	//En caso de producirse el milagro del blob birth, se lo posiciona en el arreglo.
+			int size = 0;
 			check = true;
+			switch (blobs[blobIndex].etaryGroup) {
+			case BABY_BLOB:
+				size = babyBlobCell;
+				break;
+			case GROWN_BLOB:
+				size = grownBlobCell;
+				break;
+			case GOOD_OLD_BLOB:
+				size = oldBlobCell;
+				break;
+			}
 			for (k = 0; k < blobSpaceSize && check; k++) {	
 				if (blobs[k].etaryGroup == DEATH) {	//Se busca alguna posicion libre.
-					blobs[k].birth(blobs[blobIndex], mode, speedMax, speedProb);
+					blobs[k].birth(Xsize, Ysize, blobs[blobIndex], mode, speedMax, speedProb, size);
 					check = false;
+					if (k > lastBlob)
+					{
+						lastBlob = k;
+					}
 				}
 			}
 			//En caso de no haber posiciones libres en el arreglo, se agrega una nueva.
 			if (k == blobSpaceSize) {
 				addBlobs(k + 1, Xsize, Ysize);
-				blobs[k].birth(blobs[blobIndex], mode, speedMax, speedProb);
+				blobs[k].birth(Xsize, Ysize, blobs[blobIndex], mode, speedMax, speedProb, size);
 			}
 		}
 	}
 }	
-
-
-//Los blobs recien nacidos pasan a ser babyblobs.
-void World::growNewBlobs() {
-	for (int i = 0; i <= lastBlob; i++) {	
-		if (blobs[i].etaryGroup == BIRTH) {
-			blobs[i].etaryGroup = BABY_BLOB;
-		}
-	}
-}
 
 //Chequea si food colisiona o se encuentra dentro del smellradius respecto al blob.
 bool World::checkFoodInArea(int blobIndex, Point& p2, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell, float smellRadius) {

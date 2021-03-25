@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Blob.h"
+#include "Random.h"
 
 
 #define MAX_ANGLE	360
@@ -32,26 +33,30 @@ void Blob::adjustSpeed(bool mode, int speedMax, float speedProb) {
 	else {
 		speed = random(speedMax);
 	}
-	speed *= speedProb;
+	speed *= (float) (speedProb / 100);
 }
 
 //Cambia la posicion del blob.
-void Blob::move (Point& food, double SmellRadius, float movement) {
+void Blob::move(Point& food, double SmellRadius, int xSize, int ySize) {
 	adjustMovement(food, SmellRadius);
-	position.translate(movement, direction);
-	if (position.x > SCREEN_W){
-		position.x = 0;
+	position.translate(speed, direction);
+	checkSpace(xSize, ySize);
+}	
+
+void Blob::checkSpace(int Xsize, int Ysize) {
+	if (position.x > Xsize) {
+		position.x = (float) (position.x - Xsize);
 	}
 	else if (position.x < 0) {
-		position.x = SCREEN_W;
+		position.x = (float) (Xsize - position.x);
 	}
-	if (position.y > SCREEN_H){
-		position.y = 0;
+	if (position.y > Ysize) {
+		position.y = (float) (position.y - Ysize);
 	}
-	else if (position.y < 0){
-		position.y = SCREEN_H;
+	else if (position.y < 0) {
+		position.y = (float)(Ysize - position.y);
 	}
-}	
+}
 
 //Alimenta blob y devuelve indicador de babyBirth.
 bool Blob::feed(void) {
@@ -59,7 +64,7 @@ bool Blob::feed(void) {
 	bool birth = false;
 	switch (etaryGroup) {	//Con una cierta cantidad de alimento, se da indicacion de nacimiento.
 	case BABY_BLOB:
-		if (foodCount == 3) {	
+		if (foodCount == 5) {	
 			foodCount = 0;
 			birth = true;
 		}
@@ -71,7 +76,7 @@ bool Blob::feed(void) {
 		}
 		break;
 	case GOOD_OLD_BLOB:
-		if (foodCount == 5) {
+		if (foodCount == 3) {
 			foodCount = 0;
 			birth = true;
 		}
@@ -99,13 +104,18 @@ void Blob::merge(float averageX, float averageY, float averageDirection, float a
 }
 
 //Se produce el milagro del nacimiento de un babyBlob y se lo carga en un estado etario transitorio
-void Blob::birth(Blob& blobMom, int mode, int speedMax, float speedProb) {
-	position.x = blobMom.position.x;	
-	position.y = blobMom.position.y;
-	direction = -blobMom.direction; 
-	etaryGroup = BIRTH;
-	foodCount = 0;
+void Blob::birth(int Xsize, int Ysize, Blob& blobMom, int mode, int speedMax, float speedProb, int blobMomSize) {
 	adjustSpeed(mode, speedMax, speedProb);
+	position.x = blobMom.position.x;
+	position.y = blobMom.position.y;
+	direction = -blobMom.direction;
+	do {
+		position.translate(speed, direction);
+		checkSpace(Xsize, Ysize);
+	} while (position.getDistance(blobMom.position) < (2*blobMomSize));
+	etaryGroup = BABY_BLOB;
+	foodCount = 0;
+	
 }
 
 //Actualiza probabilidad de muerte segun grupo etario y decide si matar a un blob.

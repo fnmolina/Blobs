@@ -25,7 +25,10 @@ public:
 	void adjustSpeed(bool mode, int speedMax, float speedProb);
 
 	//Cambia la posicion del blob.
-	void move(Point& food, double SmellRadius, float movement);
+	void move(Point& food, double SmellRadius, int Xsize, int Ysize);
+
+	//Controla que la posicion este dentro del espacio permitido
+	void checkSpace(int Xsize, int Ysize);
 
 	//Alimenta blob y devuelve indicador de babyBirth.
 	bool feed(void);
@@ -34,7 +37,7 @@ public:
 	void merge(float averageX, float averageY, float averageDirection, float averageSpeed);
 
 	//Se produce el milagro del nacimiento de un babyBlob y se lo carga en un estado etario transitorio
-	void birth(Blob& blobMom, int mode, int speedMax, float speedProb);
+	void birth(int Xsize, int Ysize, Blob& blobMom, int mode, int speedMax, float speedProb, int blobMomSize);
 
 	//Actualiza probabilidad de muerte segun grupo etario y decide si matar a un blob.
 	void death(float deathProbBabyBlob, float deathProbGrownBlob, float deathProbOldBlob);

@@ -1,7 +1,6 @@
 #ifndef __FOOD_H
 #define __FOOD_H
 
-#include "resources.h"
 #include "Point.h"
 
 #define EATEN 0

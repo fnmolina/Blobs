@@ -144,19 +144,44 @@
   <ItemGroup>
     <ClCompile Include="Blob.cpp" />
     <ClCompile Include="Food.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="imgui.cpp" />
+    <ClCompile Include="imgui_demo.cpp" />
+    <ClCompile Include="imgui_draw.cpp" />
+    <ClCompile Include="imgui_impl_allegro5.cpp" />
+    <ClCompile Include="imgui_tables.cpp" />
+    <ClCompile Include="imgui_widgets.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="main_OLD.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Random.cpp" />
-    <ClCompile Include="resources.cpp" />
+    <ClCompile Include="viewer.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Blob.h" />
     <ClInclude Include="Food.h" />
+    <ClInclude Include="imconfig.h" />
+    <ClInclude Include="imgui.h" />
+    <ClInclude Include="imgui_impl_allegro5.h" />
+    <ClInclude Include="imgui_internal.h" />
+    <ClInclude Include="imstb_rectpack.h" />
+    <ClInclude Include="imstb_textedit.h" />
+    <ClInclude Include="imstb_truetype.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="resources.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="UserData.h" />
+    <ClInclude Include="viewer.h" />
     <ClInclude Include="World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="babyblob.png" />
+    <Image Include="background.jpg" />
+    <Image Include="food.png" />
+    <Image Include="goodoldblob.png" />
+    <Image Include="grownblob.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

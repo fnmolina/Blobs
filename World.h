@@ -5,10 +5,11 @@
 #include "Blob.h"
 #include "Point.h"
 #include "Food.h"
+#include "UserData.h"
 
 #define	MAX_FOOD_IN_AREA	2000
 
-#define		INITIAL_BLOB_SPACE	3500
+#define	INITIAL_BLOB_SPACE	3500
 
 
 #define MAX_BLOBS_TO_COLLIDE	2000
@@ -47,7 +48,7 @@ public:
 	void destroyWorld();
 
 	//Mueve blobs segun el smell radius.
-	void moveBlobs(float movement, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell, float smellRadius);
+	void moveBlobs(int Xsize, int Ysize, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell, float smellRadius);
 
 	//Ajusta velocidad de todos los blobs segun modo de simulacion.
 	void adjustBlobsSpeed(bool mode, int speedMax, float speedProb);
@@ -62,10 +63,7 @@ public:
 	void feedBlobs(int Xsize, int Ysize, bool mode, int speedMax, float speedProb, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell);
 
 	//Alimenta al blob con toda la comida que encuentra.
-	void blobFeeding(int Xsize, int Ysize, int *foodToEat, int foodNum, int blobIndex, bool mode, int speedMax, float speedProb);
-
-	//Los blobs recien nacidos pasan a ser babyblobs.
-	void growNewBlobs();
+	void blobFeeding(int Xsize, int Ysize, int *foodToEat, int foodNum, int blobIndex, bool mode, int speedMax, float speedProb, int babyBlobCell, int grownBlobCell, int oldBlobCell);
 
 	//Chequea si food colisiona o se encuentra dentro del smellradius respecto al blob.
 	bool checkFoodInArea(int blobIndex, Point& p2, int babyBlobCell, int grownBlobCell, int oldBlobCell, int foodCell, float smellRadius = -1);
