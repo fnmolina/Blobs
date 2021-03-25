@@ -48,13 +48,13 @@ void Blob::checkSpace(int Xsize, int Ysize) {
 		position.x = (float) (position.x - Xsize);
 	}
 	else if (position.x < 0) {
-		position.x = (float) (Xsize - position.x);
+		position.x = (float) (Xsize + position.x);
 	}
 	if (position.y > Ysize) {
 		position.y = (float) (position.y - Ysize);
 	}
 	else if (position.y < 0) {
-		position.y = (float)(Ysize - position.y);
+		position.y = (float)(Ysize + position.y);
 	}
 }
 
@@ -64,19 +64,19 @@ bool Blob::feed(void) {
 	bool birth = false;
 	switch (etaryGroup) {	//Con una cierta cantidad de alimento, se da indicacion de nacimiento.
 	case BABY_BLOB:
-		if (foodCount == 5) {	
+		if (foodCount >= 5) {	
 			foodCount = 0;
 			birth = true;
 		}
 		break;
 	case GROWN_BLOB:
-		if (foodCount == 4) {
+		if (foodCount >= 4) {
 			foodCount = 0;
 			birth = true;
 		}
 		break;
 	case GOOD_OLD_BLOB:
-		if (foodCount == 3) {
+		if (foodCount >= 3) {
 			foodCount = 0;
 			birth = true;
 		}
@@ -120,19 +120,19 @@ void Blob::birth(int Xsize, int Ysize, Blob& blobMom, int mode, int speedMax, fl
 
 //Actualiza probabilidad de muerte segun grupo etario y decide si matar a un blob.
 void Blob::death(float deathProbBabyBlob, float deathProbGrownBlob, float deathProbOldBlob) {
-	float deathProb = 0;
+	float deathProb = 100;
 	switch (etaryGroup) {
 	case BABY_BLOB:
-		deathProb = deathProbBabyBlob;
+		deathProb *= deathProbBabyBlob;
 		break;
 	case GROWN_BLOB:
-		deathProb = deathProbGrownBlob;
+		deathProb *= deathProbGrownBlob;
 		break;
 	case GOOD_OLD_BLOB:
-		deathProb = deathProbOldBlob;
+		deathProb *= deathProbOldBlob;
 		break;
 	}
-	double death = random(1);	//Calcula probabilidad de muerte 
+	double death = random(100);	//Calcula probabilidad de muerte 
 	if (death < deathProb) {	//Y decide si lo mata o no.
 		etaryGroup = DEATH;
 	}

@@ -40,7 +40,7 @@ public:
 	bool checkPointInRect(Point& p2, float maxX, float maxY);
 
 	// Devuelve el indice del punto mas proximo de entre un arreglo de puntos.
-	Point closerPoint(Point p[], int maxPoint);
+	Point closerPoint(Point *p, int maxPoint);
 };
 
 #endif //POINT_H

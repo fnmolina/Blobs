@@ -25,7 +25,7 @@
 #define DEF_DTH_BLOB 0
 #define DEF_DTH_OLD 0
 
-#define FPS 1
+#define FPS 10
 
 using namespace std;
 
@@ -141,7 +141,7 @@ int main(int argc, char* argv[]) {
 										ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y + BACKGROUND_VERTICAL_LIMIT), ImGuiCond_FirstUseEver);
 										ImGui::Begin("Speed & Movement sliders:", NULL, window_flags);                          // Create a window for sliders																					
 										ImGui::SliderFloat("Blob Speed %", &uData.speedProb, 0.0f, 100.0f, NULL, reg_slider);            // Slider for % speed, int, 0 to 100
-										ImGui::SliderFloat("Blob Smell Radius", &uData.smellRadius, 0.0f, 900.0f, NULL, log_slider);				 // Slider for smell radius, int in pixels.
+										ImGui::SliderFloat("Blob Smell Radius", &uData.smellRadius, 0.0f, 900.0f, NULL, reg_slider);				 // Slider for smell radius, int in pixels.
 										ImGui::SliderFloat("Merge Random Jiggle", &uData.randomJiggleLimit, 0.0f, 360.0f, NULL, reg_slider);		// Slider for Random Jiggle limit, int in angle.
 										//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 										ImGui::End();
@@ -149,9 +149,9 @@ int main(int argc, char* argv[]) {
 										//Second set of sliders: death ratio
 										ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 350, main_viewport->WorkPos.y + BACKGROUND_VERTICAL_LIMIT), ImGuiCond_FirstUseEver);
 										ImGui::Begin("Death ratios:", NULL, window_flags);
-										ImGui::SliderFloat("BabyBlob Death Ratio", &uData.deathProbBabyBlob, 0.000f, 1.000f, NULL, reg_slider);		// Slider for death ratio of baby blobs float 0f to 1f
-										ImGui::SliderFloat("Blob Death Ratio", &uData.deathProbGrownBlob, 0.000f, 1.000f, NULL, reg_slider);		   // Slider for death ratio of grown blobs.
-										ImGui::SliderFloat("OldBlob Death Ratio", &uData.deathProbOldBlob, 0.000f, 1.000f, NULL, reg_slider);		  // Slider for death ratio of good old blobs.
+										ImGui::SliderFloat("BabyBlob Death Ratio", &uData.deathProbBabyBlob, 0.000f, 1.000f, NULL, log_slider);		// Slider for death ratio of baby blobs float 0f to 1f
+										ImGui::SliderFloat("Blob Death Ratio", &uData.deathProbGrownBlob, 0.000f, 1.000f, NULL, log_slider);		   // Slider for death ratio of grown blobs.
+										ImGui::SliderFloat("OldBlob Death Ratio", &uData.deathProbOldBlob, 0.000f, 1.000f, NULL, log_slider);		  // Slider for death ratio of good old blobs.
 										ImGui::End();
 
 										//Buttons for help & others
@@ -170,7 +170,7 @@ int main(int argc, char* argv[]) {
 											ImGui::Text("These are instructions on how to use the sliders and what they are for.");
 											ImGui::Text("TIP: The sliders at the bottom control the simulation parameters, they can be modified manually or a value can be input by \nCtrl + clicking on them.");
 											if (!uData.mode)
-												ImGui::Text("\nSpeed %%: \n	Determines how slow or fast blobs move per frame relative to the maximum speed chosen for the simulation. \nMinimum value is set to zero, blobs are immobile, or maxed out at 100%, running at max speed.\nThis is for Mode 1 only.\n");
+												ImGui::Text("\nSpeed %%: \n	Determines how slow or fast blobs move per frame relative to the maximum speed chosen for the simulation. \nMinimum value is set to zero, blobs are immobile, or maxed out at 100%, running at max speed.\n");
 											ImGui::Text("\nSmell Radius:\n	Determines how far a blob will be able to detect food nearby. In a sense, it determines their sight distance to food. \nWhen a blob sees food, it will change direction to the nearest source and try to consume it before other blobs reach it. \nThe slider can be set from 0, in which blobs move like headless chickens, or 900, in which case they will see all food \non the map.");
 											ImGui::Text("\nMerge Random Jiggle:\n		Determines the maximum value of a random number generator which determines blob direction right after a blob merge. \nBlobs will merge with each other if they touch and are the same etary group. Their new direction is a mean taken from \nall blobs merged plus the random jiggle generator. The higher this number, the more random a blobs direction will be \nafter they merge. Its range is 0, completely deterministic, to 360, completely chaotic.");
 											ImGui::Text("\nDeath Ratio sliders:\n		These determine the chance of death of each blob group. This can be used to kill all blobs of one or all groups by \nmaxing it at 1, or give all blobs immortality by minimizing it to 0. Please be mindful of the birth to death ratio.");
@@ -209,9 +209,9 @@ int main(int argc, char* argv[]) {
 										//Second set of sliders: death ratio
 										ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x + 350, main_viewport->WorkPos.y + 100), ImGuiCond_FirstUseEver);
 										ImGui::Begin("Parametros para simulacion:", NULL, window_flags);
-										ImGui::SliderInt("Max Speed", &uData.speedMax, 1, 900, NULL, reg_slider);		// Slider for death ratio of baby blobs float 0f to 1f
-										ImGui::SliderInt("Initial Blob Count", &uData.initialBlobs, 1, 3000, NULL, reg_slider);		   // Slider for death ratio of grown blobs.
-										ImGui::SliderInt("Food Count", &uData.foodCount, 1, 3000, NULL, reg_slider);		  // Slider for death ratio of good old blobs.
+										ImGui::SliderInt("Max Speed", &uData.speedMax, 1, 900, NULL, log_slider);		// Slider for death ratio of baby blobs float 0f to 1f
+										ImGui::SliderInt("Initial Blob Count", &uData.initialBlobs, 1, 100, NULL, reg_slider);		   // Slider for death ratio of grown blobs.
+										ImGui::SliderInt("Food Count", &uData.foodCount, 1, 100, NULL, reg_slider);		  // Slider for death ratio of good old blobs.
 										if (ImGui::Button("Mode Switch"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 											uData.mode = !(uData.mode);
 										ImGui::SameLine();
@@ -234,9 +234,9 @@ int main(int argc, char* argv[]) {
 											ImGui::Text("These are instructions on how to use the GUI and what each knob is for.");
 											ImGui::Text("TIP: The sliders at control the simulations initial parameters, they can be modified manually or a value can be input by \nCtrl + clicking on them.");
 											if (!uData.mode)
-												ImGui::Text("\nMax Speed: \n	Determines the maximum overall speed of the blobs when the simulation is set at 100%% speed.\n Minimum value is set to zero, blobs are immobile, or maxed out at 900, crossing the entire background in one step.\nThis is for Mode 1 only.\n");
-											ImGui::Text("\nInitial Blob Count:\n	Determines how many blobs will be spawned as the simulation starts, influencing their survivability.\nBlobs can die and will be competing for food, but can also merge. Merging can result in higher death rates however.\nThe slider can be set from 1, in which a lonely blob desperately clings to dear life, or 3000, in which case they will most likely merge and compete for food.");
-											ImGui::Text("\nFood Count:\n		Determines the amount of food available at any given moment. Food always respawns as soon as it is eaten, \nSo shortages are permanent but there will always be another piece of food to move towards.\nThe minimum food count is 1, a lucky few blobs will ever see it, or maximized at 3000, plenty of food for everyone,\nor at least one food for each.");
+												ImGui::Text("\nMax Speed: \n	Determines the maximum overall speed of the blobs when the simulation is set at 100%% speed.\n Minimum value is set to zero, blobs are immobile, or maxed out at 900, crossing the entire background in one step.\n");
+											ImGui::Text("\nInitial Blob Count:\n	Determines how many blobs will be spawned as the simulation starts, influencing their survivability.\nBlobs can die and will be competing for food, but can also merge. Merging can result in higher death rates however.\nThe slider can be set from 1, in which a lonely blob desperately clings to dear life, or 100, in which case they will most likely merge and compete for food.");
+											ImGui::Text("\nFood Count:\n		Determines the amount of food available at any given moment. Food always respawns as soon as it is eaten, \nSo shortages are permanent but there will always be another piece of food to move towards.\nThe minimum food count is 1, a lucky few blobs will ever see it, or maximized at 100, plenty of food for everyone,\nor at least one food for each.");
 											ImGui::Text("\nMode:\n		This button controls the simulation mode that is chosen for a simulation, mode 1 consists of a singular\nspeed for all blobs, whilst mode 2 randomizes speeds for each given blob instance.");
 											ImGui::Text("\nStart Simulation:\n		As should be evident, this button takes the chosen initial parameters and begins the simulation. \nOnce a simulation starts the parameters chosen here will not change until the simulation is stopped, at which point the\n world will be destroyed and returned to this screen, so that new initial values can be chosen.");
 											ImGui::Text("\nThe '??' button you just pressed opens this window. It can be closed by clicking on the X at the top right corner. \nWe hope it's served its purpose.\n");

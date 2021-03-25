@@ -7,7 +7,7 @@
 #include "Food.h"
 #include "UserData.h"
 
-#define	MAX_FOOD_IN_AREA	2000
+#define	MAX_FOOD_IN_AREA	3500
 
 #define	INITIAL_BLOB_SPACE	3500
 
@@ -72,7 +72,7 @@ public:
 	void blobCollision(int babyBlobCell, int grownBlobCell, int oldBlobCell, float randomJiggleLimit);
 
 	//Realiza mergeo de blobs colisionados.
-	void mergeBlobs(int blobsToMerge[], int blobNum, float randomJiggleLimit);
+	void mergeBlobs(int *blobsToMerge, int blobNum, float randomJiggleLimit);
 
 	//Verifica si ocurre una colision entre blobs.
 	bool checkBlobsCollision(Blob& b1, Blob& b2, int babyBlobCell, int grownBlobCell, int oldBlobCell);

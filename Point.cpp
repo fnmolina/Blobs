@@ -45,21 +45,27 @@ float Point::getDistance(Point& p2) {
 
 //Calcula angulo entre dos puntos.
 float Point::getAngle(Point& p2) {
-    float angle;
-    if (x == p2.x && y == p2.y) {
-        angle = 0;
-        return angle;
-    }
-    angle = (float) (atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI);  // Tomo el angulo como si fuera un triangulo rectangulo
-    if (angle < 0)
-        angle = -angle;
-    if (p2.x > x && p2.y < y)    // Verifico todas las posibilidades de distribuciones para obtener el angulo respecto el norte
-        angle = RIGHTANGLE * 2 - angle;
-    else if (p2.x < x && p2.y > y)
-        angle = RIGHTANGLE * 4 - angle;
-    else if (p2.x < x && p2.y < y)
-        angle += RIGHTANGLE * 2;
-    return  (float) (angle);
+	float angle;
+	if (x == p2.x && y == p2.y) {
+		angle = 0;
+		return angle;
+	}
+	angle = (float)(atan(((p2.x - x) / (p2.y - y))) * RIGHTANGLE * 2 / PI);  // Tomo el angulo como si fuera un triangulo rectangulo
+	if (angle < 0)
+		angle = -angle;
+	if (p2.x > x && p2.y < y)    // Verifico todas las posibilidades de distribuciones para obtener el angulo respecto el norte
+		angle = RIGHTANGLE * 2 - angle;
+	else if (p2.x < x && p2.y > y)
+		angle = RIGHTANGLE * 4 - angle;
+	else if (p2.x < x && p2.y < y)
+		angle += RIGHTANGLE * 2;
+	return  (float)(angle);
+
+	/*float angle = (float)((180 / PI) * atan2((y - p2.y), (x - p2.x)));
+	if (angle < 0)
+		angle *= -1;
+	return angle;*/
+//}
 }
 
 //Translada un punto a otra posicion segun distancia y angulo.
@@ -112,7 +118,7 @@ bool Point::checkPointInRect(Point& p2, float maxX, float maxY) {
 }
 
 // Devuelve el indice del punto mas proximo de entre un arreglo de puntos.
-Point Point::closerPoint(Point p[], int maxPoint) {
+Point Point::closerPoint(Point *p, int maxPoint) {
     int index = 0;
     double aux;
     double closer = getDistance(p[index]);
